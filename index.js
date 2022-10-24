@@ -47,7 +47,7 @@ loginButton.addEventListener('click', async(event)=>
         setTimeout(()=>
         {
             window.location.replace('Homepage.html');
-        },3000)
+        })
 
     }
     catch(error)

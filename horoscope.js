@@ -10,7 +10,7 @@ currentUser = JSON.parse(currentUser);
 console.log(currentUser);
 
 let welcomeLabel = document.getElementById("welcome");
-welcomeLabel.innerHTML = `Welcome ${currentUser.firstName}!`
+welcomeLabel.innerHTML = `Welcome ${currentUser.firstName} ${currentUser.lastName}!`
 
 
 
@@ -49,6 +49,12 @@ function generateCompliment(json_data)
 complimentLabel.innerHTML = totalCompli;
 
 }
+
+
+
+userZod = document.getElementById("userZodiac");
+userZod.innerHTML = "Zodiac Sign: " + currentUser.zodiac;
+
 
 
 var properZodiac = "";           
@@ -96,7 +102,7 @@ horoscope();
 
 //add event listener
 buttonMood.addEventListener('click', async() =>
-    {
+    {//https://complimentr.com/ Where I found the compliments api
         try
         {
             console.log(properZodiac);
@@ -129,7 +135,7 @@ buttonMood.addEventListener('click', async() =>
     var moodSpace = document.getElementById("moodInput");
     var mood = json_data.meta.mood;
     let moodProper = mood[0].toUpperCase() + mood.substring(1);
-
+    moodSpace.classList.add("mood");
     moodSpace.innerHTML = 'Mood: ' + moodProper;
 
     setMood(moodProper);

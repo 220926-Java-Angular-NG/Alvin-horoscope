@@ -10,17 +10,48 @@
             background-image:url('./Images/shutterstock_295846730.jpg'); 
             background-size: cover;
         }
+
+        .horoscope
+        {
+            margin:auto;
+
+            width: 60%;
+            border: 5px solid black;
+            padding: 10px;
+            height: 10%;
+            background-color: lavender;
+            text-align: center;
+        }
+        .mood
+        {
+            margin:auto;
+            width: 10%;
+            border: 5px solid black;
+            padding: 10px;
+            height: 10%;
+            background-color: lavender;
+            text-align: center;
+        }
+        .buttonPlace
+        {
+            margin:auto;
+            
+        }
+
+
     </style>
 </head>
 <body class = "back">
     <h1 style = "color: white;" id = "welcome"></h1>
     <h2 style = "color: white;" id="compliment"></h2>
 
-    <h2 id = input style = "color: white;"></h2>
+    <h1 style = "color: white; text-align: center;" id = "userZodiac">Zodiac</h1>
 
-    <button id = "moodButton">What mood am I?</button>
+    <h2 id = input style = "color: black;" class = "horoscope"></h2>
 
-    <h2 id = moodInput style = "color: white;"></h2>
+    <button id = "moodButton" class="buttonPlace">What mood am I?</button>
+
+    <h2 id = moodInput style = "color: black;"></h2>
 
     <p id="Test" style = "color: white;"></p>
     <script src = "horoscope.js";></script>
