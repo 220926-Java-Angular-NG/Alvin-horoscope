@@ -5,62 +5,90 @@
  * It allows us to write asynchronous code.
  */
 
+let currentUser = localStorage.getItem("currentUser");
+currentUser = JSON.parse(currentUser);
+console.log(currentUser);
+
+let welcomeLabel = document.getElementById("welcome");
+welcomeLabel.innerHTML = `Welcome ${currentUser.firstName}!`
 
 
 
 
-
-var properZodiac = "";
-
-//get our button
-let button = document.getElementById("button")
-
-//add event listener
-button.addEventListener('click', async() =>
+complimentUser();
+async function complimentUser()
+{
+    try
     {
-        //get the value from our user input field (ie the text box)
-        let zodiac = document.getElementById('field').value;
-        properZodiac = zodiac.toLowerCase();
-        //send request to the pokemon api
-        //to do that we have to wrap our code in a try catch
-        console.log(zodiac);
-        try
-        {
+    const raw_response = await fetch(`https://complimentr.com/api`, 
+    {
+        method: "GET"
+    });
 
-            //this fetch method implicitely returns a promise
-            const raw_response = await fetch(`http://sandipbgt.com/theastrologer/api/horoscope/${properZodiac}/today`);
+        if(!raw_response.ok)
+            throw new Error(raw_response.status);
 
-            if(!raw_response.ok)
-            {
-                //throw new Error(raw_response.status);
-                alert(`Error status: ${raw_response.status}`);
-            }
+        const json_data = await raw_response.json();
 
-            const json_data = await raw_response.json();
-
-            getZodiac(json_data);
-            console.log(json_data);
-            console.log(properZodiac);
-
-
-        }
-        catch(error)
-        {
-            console.log(error);
-        }
+        generateCompliment(json_data);
     }
- )
+    catch(error)
+    {
+        console.log(error);
+    }
+}
+
+function generateCompliment(json_data)
+{
+ let complimentLabel = document.getElementById("compliment");   
+ comString = json_data.compliment
+ firstLetter = comString[0].toUpperCase();
+ sentence = comString.substring(1) + ".";
+ totalCompli = firstLetter + sentence;
+
+complimentLabel.innerHTML = totalCompli;
+
+}
+
+
+var properZodiac = "";           
+properZodiac = currentUser.zodiac.toLowerCase();
+//console.log(properZodiac);
+async function horoscope()
+{
+    try
+    {
+        //this fetch method implicitely returns a promise
+        const raw_response = await fetch(`http://sandipbgt.com/theastrologer/api/horoscope/${properZodiac}/today`);
+
+        if(!raw_response.ok)
+        {
+            //throw new Error(raw_response.status);
+            alert(`Error status: ${raw_response.status}`);
+        }
+        
+        const json_data = await raw_response.json();
+        
+        getZodiac(json_data);
+
+        
+        
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+}
 
 
  function getZodiac(json_data)
- {//This is where we will manipulate our DOM
+ {
     var input = document.getElementById("input");
-    var Horo = document.createElement("h2");
-    
-    //Note: append vs appendChild
-    Horo.innerHTML = `Horoscope: ${json_data.horoscope}`;
-    input.append(Horo);
+    input.innerHTML = `Horoscope: ${json_data.horoscope}`;
  }
+
+
+horoscope();
 
 
 
@@ -69,16 +97,10 @@ button.addEventListener('click', async() =>
 //add event listener
 buttonMood.addEventListener('click', async() =>
     {
-        console.log(properZodiac);
-        //get the value from our user input field (ie the text box)
-        let zodiac = document.getElementById('field').value;
-        properZodiac = zodiac.toLowerCase();
-        //send request to the pokemon api
-        //to do that we have to wrap our code in a try catch
-        console.log(zodiac);
         try
         {
-
+            console.log(properZodiac);
+            properZodiac = currentUser.zodiac.toLowerCase();
             //this fetch method implicitely returns a promise
             const raw_response = await fetch(`http://sandipbgt.com/theastrologer/api/horoscope/${properZodiac}/today`);
 
@@ -105,24 +127,38 @@ buttonMood.addEventListener('click', async() =>
  function getMood(json_data)
  {
     var moodSpace = document.getElementById("moodInput");
-    var Horo = document.createElement("h2");
-    
-    //Note: append vs appendChild
-    let mood = json_data.meta.mood;
-    console.log(mood);
+    var mood = json_data.meta.mood;
     let moodProper = mood[0].toUpperCase() + mood.substring(1);
 
-    Horo.innerHTML = 'Mood: ' + moodProper;
-    // Horo.innerHTML = `Mood: ${json_data.meta.mood}`;
-    moodSpace.append(Horo);
+    moodSpace.innerHTML = 'Mood: ' + moodProper;
+
+    setMood(moodProper);
  }
 
-//  function getZodiac(json_data)
-//  {//This is where we will manipulate our DOM
-//     var input = document.getElementById("input");
-//     var Horo = document.createElement("h2");
-    
-//     //Note: append vs appendChild
-//     Horo.innerHTML = `Horoscope: ${json_data.horoscope}`;
-//     input.append(Horo);
-//  }
+async function setMood(moodCurrent)
+{
+    let moodPut =
+    {
+        userId: currentUser.userId,
+        mood: moodCurrent
+    };
+    let json = JSON.stringify(moodPut); 
+    try
+    {
+        const raw_response = await fetch ('http://localhost:8080/user',
+        {
+            method: "PUT",
+            body: json
+        });
+
+        if(!raw_response.ok)
+        {
+            throw new Error(raw_response.status);
+        }
+
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+}
